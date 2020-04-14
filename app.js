@@ -6,11 +6,24 @@ const logger=require('koa-logger')
 const path=require('path')
 const body=require('koa-body')
 const session=require('koa-session')
+const compress=require('koa-compress')
 //创建服务
 const app=new Koa
 
 //注册日志模块 可以在控制台查看日志和错误信息
 // app.use(logger())
+
+//注册资源压缩模块
+app.use(compress({
+    //压缩文件的类型
+    // filter:function(content_type){
+    //     return /text/i.text(content_type)
+    // },
+    //压缩文件的大小 超过2Kb就压缩
+    threshold:2048,
+    flush:require('zlib').Z_SYNC_FLUSH
+}))
+
 const CONFIG={
     //session id
     key:'Sid',
@@ -28,6 +41,7 @@ const CONFIG={
 }
 //配置session
 app.use(session(CONFIG,app))
+
 
 //配置koa-body 用于处理post表单数据
 app.use(body())
