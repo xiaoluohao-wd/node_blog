@@ -19,10 +19,13 @@
   "homepage": "https://github.com/xiaoluohao-wd/node_blog#readme",
   "dependencies": {
     "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
     "koa-logger": "^3.2.1",
     "koa-router": "^8.0.8",
+    "koa-session": "^5.13.1",
     "koa-static": "^5.0.0",
     "koa-views": "^6.2.1",
+    "mongoose": "^5.9.9",
     "pug": "^2.0.4"
   }
 }
