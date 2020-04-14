@@ -1,16 +1,20 @@
 const {Schema}=require('./config')
 //mongodb的一种主键的数据类型 用于关联集合
 const ObjectId=Schema.Types.ObjectId
-const ArticleSchema=new Schema({
+const CommentSchema=new Schema({
+    //头像 用户名 文章 内容
     title:String,
     content:String,
     //通过author属性关联User的集合 
-    author:{
+    from:{
         type:ObjectId,//类型是ObjectId
         ref:'users'//关联的集合名是users
     },
-    tips:String,
-    commentNum:Number
+    //关联到article集合
+    article:{
+        type:ObjectId,
+        ref:'articles'
+    }
 },
 {
     versionKey:false,
@@ -18,4 +22,4 @@ const ArticleSchema=new Schema({
     timestamps:{createdAt:'created'}
 })
 
-module.exports=ArticleSchema
+module.exports=CommentSchema

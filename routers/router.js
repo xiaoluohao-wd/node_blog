@@ -2,6 +2,7 @@ const Router=require('koa-router')
 const router=new Router
 const user=require('../controller/user')
 const article=require('../controller/article')
+const comment=require('../controller/comments')
 //设计主页
 router.get('/',user.keepLog,article.getArticleList)
 
@@ -31,5 +32,8 @@ router.get('/page/:page',article.getArticleList)
 
 //文章详情路由
 router.get('/article/:articlename',user.keepLog,article.details)
+
+//点击发表文章评论
+router.post('/comment',comment.addComment)
 
 module.exports=router

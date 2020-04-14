@@ -4,6 +4,11 @@ const Article=db.model('articles',ArticleSchema)
 //连接用户的集合获取信息
 const UserSchema=require('../Schema/userSchema')
 const User=db.model('users',UserSchema)
+
+//连接评论的集合
+const CommentSchema=require('../Schema/commentSchema')
+const Comments=db.model('comments',CommentSchema)
+
 //显示文章发表的页面
 exports.showAddPage=async ctx=>{
     await ctx.render('add-article',{title:'发表文章',session:ctx.session})
@@ -22,6 +27,7 @@ exports.add=async ctx=>{
     const data=ctx.request.body
     //author的类型是objectId
     data.author=ctx.session.uid
+    data.commentNum=0
     await new Promise((resolve,reject)=>{
         new Article(data).save((err,data)=>{
             if(err)return reject(err)
@@ -73,19 +79,34 @@ exports.getArticleList=async ctx=>{
 
 }
 
-
 //文章详情页
 exports.details=async ctx=>{
     const _id=ctx.params.articlename
+    //查找文章数据
     const article= await Article.findById(_id)
                  .populate({
                      path:'author',
                      select:'username'
                  })
                  .then(data=>data)
+
+    //查找评论内容
+    const comment=await Comments.find({article:_id})
+                    .sort('-created')
+                    .populate(
+                        {
+                            path:'from',
+                            select:'username _id avatar'
+                        }
+                    )
+                    .then(data=>data)
+                    .catch(err=>console.log(err))
+    console.log(comment)
+    //渲染页面
     await ctx.render('article',{
         title:article.title,
         session:ctx.session,
+        comment,
         article
     })
 }
