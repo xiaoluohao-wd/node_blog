@@ -1,0 +1,20 @@
+{
+  "name": "node_blog",
+  "version": "1.0.0",
+  "description": "简单的个人博客",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaoluohao-wd/node_blog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xiaoluohao-wd/node_blog/issues"
+  },
+  "homepage": "https://github.com/xiaoluohao-wd/node_blog#readme"
+}
