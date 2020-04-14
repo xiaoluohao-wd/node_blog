@@ -1,13 +1,6 @@
-const {db}=require('../Schema/config')
-const ArticleSchema=require('../Schema/articleSchema')
-const Article=db.model('articles',ArticleSchema)
-//连接用户的集合获取信息
-const UserSchema=require('../Schema/userSchema')
-const User=db.model('users',UserSchema)
-
-//连接评论的集合
-const CommentSchema=require('../Schema/commentSchema')
-const Comments=db.model('comments',CommentSchema)
+const Article=require('../Models/article')
+const User=require('../Models/user')
+const Comments=require('../Models/comments')
 
 //显示文章发表的页面
 exports.showAddPage=async ctx=>{
@@ -31,6 +24,10 @@ exports.add=async ctx=>{
     await new Promise((resolve,reject)=>{
         new Article(data).save((err,data)=>{
             if(err)return reject(err)
+            //更新用户文章计数
+            User.update({_id:data.author},{$inc:{articleNum:1}},(err)=>{
+                if(err)return console.log(err)
+            })
             resolve(data)
         })
     }).then(data=>{
@@ -101,7 +98,6 @@ exports.details=async ctx=>{
                     )
                     .then(data=>data)
                     .catch(err=>console.log(err))
-    console.log(comment)
     //渲染页面
     await ctx.render('article',{
         title:article.title,
@@ -110,3 +106,36 @@ exports.details=async ctx=>{
         article
     })
 }
+
+
+// 返回用户所有文章
+exports.artlist = async ctx => {
+    const uid = ctx.session.uid
+    const data = await Article.find({author: uid})
+    ctx.body = {
+      code: 0,
+      count: data.length,
+      data
+    }
+  }
+
+// 删除对应 id 的文章
+exports.del = async ctx => {
+    //获取文章id
+    const _id = ctx.params.id
+    let res = {
+      state: 1,
+      message: "成功"
+    }
+    //通过id自身调用remove()方法触发钩子函数
+    await Article.findById(_id)
+      .then(data =>data.remove())
+      .catch(err => {
+        res = {
+          state: 0,
+          message: err
+        }
+      })
+  
+    ctx.body = res
+  }
