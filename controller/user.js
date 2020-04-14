@@ -1,5 +1,5 @@
 const {db}=require('../Schema/config')
-const UserSchema=require('../Schema/user')
+const UserSchema=require('../Schema/userSchema')
 const encrypt=require('../util/encrypt')
 //通过db创建user集合 指定文档结构为UserSchema
 const User=db.model('users',UserSchema)
@@ -84,7 +84,8 @@ exports.login=async (ctx)=>{
         //设置session
         ctx.session={
             username,
-            uid:data[0]._id
+            uid:data[0]._id,
+            avatar:data[0].avatar
         }
         await ctx.render('isOk',{status:'登录成功'})
     }).catch(async err=>{
@@ -93,7 +94,6 @@ exports.login=async (ctx)=>{
 }
 //确认用户的状态 
 exports.keepLog=async (ctx,next)=>{
-    console.log(2)
     if(ctx.session.isNew) {//说明session没有值
         //如果cookie有值 则说明应该保存用户的登录状态 并更新session
         if(ctx.cookies.get('username')){
